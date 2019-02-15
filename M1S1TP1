@@ -1,0 +1,61 @@
+Partie 1 :
+
+mysql -p
+user
+use user
+show tables;
+DESC nomdelatable;
+CREATE TABLE Destination (DestinationId int, Ville char(20), Pays char(20), Distance double(10,3));
+ALTER TABLE Avion MODIFY COLUMN Vitesse double(6,2);
+Attention : double(nombre de chiffres au total, nombres de chiffres apres la virgule).
+ALTER TABLE Personnel MODIFY COLUMN Nom char(10);
+ALTER TABLE Avion ADD COLUMN Capacite int;
+ALTER TABLE Personnel MODIFY COLUMN PersonnelId int not null autoincrement;
+ALTER TABLE Personnel ADD PRIMARY KEY (PersonnelId);
+ALTER TABLE Equipage ADD PRIMARY KEY (VolId, PersonnelId);
+ALTER TABLE Equipage ADD FOREIGN KEY (VolId) REFERENCES Vol (VolId);
+INSERT INTO Compagnie VALUES (1, 'Armee');
+insert into Avion values (1,1,'Rafale',1912,0,1);
+UPDATE Avion SET Equipage = 1;
+UPDATE Avion SET Nom = UPPER(Nom);
+UPDATE Destination SET Ville = LOWER (Ville) WHERE Distance > 1000;
+delete from Avion where Equipage = 0;
+
+Partie 2 :
+
+Select A.vitesse from Avion A where A.nom ='A320';
+Select P.nom from Personnel P.Type = 'Pilote';
+SELECT DISTINCT Pays FROM Destination;
+SELECT P.Naissance FROM Personnel P Where P.Nom = 'MICHEL';
+
+SELECT D.Ville
+FROM Destination D, Vol V, Equipage E, Personnel P
+WHERE P.PersonnelId = E.PersonnelId
+AND V.VolId = E.VolId
+AND D.DestinationId = V.DestinationId
+AND P.Nom = 'Michel'
+ORDER BY D.Ville ASC;	//ascendant
+
+SELECT DISTINCT A.Nom
+FROM Avion A, Vol V, Destination D
+WHERE A.AvionId = V.AvionId
+AND V.DestinationId = D.DestinationId
+AND D.Ville = 'Londres'
+ORDER BY A.Vitesse DSC;
+
+19)
+SELECT D.Ville
+FROM Destination D
+WHERE P.Nom = 'SOPHIE'
+AND P.Naissance < (SELECT P.Naissance
+					FROM Personnel P
+					WHERE 
+
+Date peut aussi s'ecrire comme ca : '2005-10-10'
+
+mode info :
+
+use information_schema;
+show tables;
+select * FROM TABLE_CONSTRAINTS;
+select * from KEY_COLUMN_USAGE;

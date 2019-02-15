@@ -1,0 +1,10 @@
+
+
+ENLEVER ID SOIGNE DE SOIGNE, sa clé primaire est la composition des clées étrangères (de soigneur et animal) 
+On le declare en clé primaire composé puis les clé etrangere
+
+requetes select
+requetes alter
+vues
+droit d acces utiisateur
+TRANSMISSION DE DROIT D ACCES SUR DES SELECT ETC ...

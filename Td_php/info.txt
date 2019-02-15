@@ -1,0 +1,89 @@
+user@debian:~$ cd ../..
+user@debian:/$ cd var
+user@debian:/var$ cd www
+user@debian:/var/www$ sudo chmod -R a+rwx html/
+user@debian:/var$ sudo chmod -R a+rwx www/
+sudo chmod 777 -R php/
+sudo service apache2 restart
+
+
+let in if 2 < 3 then print ("ok") end
+src/driver/dtiger -i --dump-ir test.tig
+let var a := if 2 > 3 then 10 else 20 in a end
+let var a := if 2 > 3 then 10 else 20 in print_int(a) end
+
+pour le while : 
+let var a := 10 in while a do (a := a - 1; print_int(a)) end
+
+Le break
+
+let in while (1) do break end
+
+le ifthenelse de ben
+
+llvm::Value *result;
+if (ite.get_type () == t_void) //si le ite ne renvoi rien, alors le résultat vaut un pointeur nul
+  result = nullptr;
+else
+  result = alloca_in_entry(llvm_type(ite.get_type()), "if_result"); //sinon le résultat vaut la valeur renvoyée 
+
+if (ite.get_else_part().accept(*this) != NULL){
+  llvm::BasicBlock *const then_block =
+    llvm::BasicBlock::Create(Context, "if_then", current_function);
+  llvm::BasicBlock *const else_block =
+    llvm::BasicBlock::Create(Context, "if_else", current_function);
+  llvm::BasicBlock *const end_block =
+    llvm::BasicBlock::Create(Context, "if_end", current_function);
+
+  Builder.CreateCondBr(
+    Builder.CreateIsNotNull(ite.get_condition().accept(*this)),
+    then_block,
+    else_block);
+
+  Builder.SetInsertPoint(then_block);
+
+  llvm::Value *const then_result =
+    ite.get_then_part().accept(*this);
+
+  if (ite.get_type () != t_void) //on vérifie si le then renvoi une valeur 
+    Builder.CreateStore(then_result, result);
+
+  Builder.CreateBr(end_block);
+
+  Builder.SetInsertPoint(else_block);
+
+  llvm::Value *const else_result =
+    ite.get_else_part().accept(*this);
+
+  if (ite.get_type () != t_void) //on vérifie si le else renvoi une valeur 
+    Builder.CreateStore(else_result, result);
+
+  Builder.CreateBr(end_block);
+  Builder.SetInsertPoint(end_block);
+}
+else {
+  llvm::BasicBlock *const then_block =
+    llvm::BasicBlock::Create(Context, "if_then", current_function);
+  llvm::BasicBlock *const end_block =
+    llvm::BasicBlock::Create(Context, "if_end", current_function);
+
+  Builder.CreateCondBr(
+    Builder.CreateIsNotNull(ite.get_condition().accept(*this)),
+    then_block,
+    end_block);
+
+  Builder.SetInsertPoint(then_block);
+
+  llvm::Value *const then_result =
+    ite.get_then_part().accept(*this);
+
+  if (ite.get_type () != t_void) //on vérifie si le then renvoi une valeur 
+    Builder.CreateStore(then_result, result);
+
+  Builder.CreateBr(end_block);
+  Builder.SetInsertPoint(end_block);
+}
+if (ite.get_type () != t_void)
+  return Builder.CreateLoad(result);
+else 
+  return nullptr;

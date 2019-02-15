@@ -1,0 +1,126 @@
+R1
+	SELECT nom,prenom FROM `malade` WHERE mutuelle LIKE 'MAAF'
+
+R2
+	SELECT nom,prenom FROM `infirmier`, `employe` 
+	WHERE employe.numero = infirmier.numero AND infirmier.rotation = 'NUIT'
+
+R3
+
+	SELECT service.nom, batiment, employe.nom, employe.prenom, docteur.specialite 
+	FROM `service` JOIN docteur ON service.directeur = docteur.numero
+	JOIN employe ON employe.numero = docteur.numero
+	
+R4
+
+	SELECT lit, hospitalisation.no_chambre, hospitalisation.lit, service.nom, malade.nom, malade.prenom, malade.mutuelle
+	FROM `hospitalisation`, `service`, `malade`
+	WHERE service.code = hospitalisation.code_service AND hospitalisation.no_malade = malade.numero
+	AND service.batiment = 'B' AND malade.mutuelle LIKE 'MN%'
+
+R5
+
+	SELECT infirmier.code_service, AVG(infirmier.salaire)
+	FROM infirmier
+	GROUP BY infirmier.code_service
+
+R6
+
+	SELECT chambre.code_service, AVG(chambre.nb_lit) AS nombre_lits
+	FROM chambre, service
+	WHERE chambre.code_service = service.code
+	AND service.batiment = 'A'
+	GROUP BY chambre.code_service
+
+R7
+
+	SELECT malade.nom, malade.prenom, 
+	COUNT(DISTINCT soigne.no_docteur) AS nb_soignant, COUNT(DISTINCT docteur.specialite)
+	FROM `malade`, `soigne`, `docteur`
+	WHERE soigne.no_malade = malade.numero
+	AND soigne.no_docteur = docteur.numero
+	GROUP BY malade.nom, malade.prenom
+	HAVING nb_soignant >3
+	
+R8
+
+SELECT nom, (SELECT COUNT(*) FROM infirmier i, WHERE i.code_service = s.code)
+			(SELECT COUNT(*) FROM hospitalisation h WHERE h.code_service = s.code) AS rapport_i_sur_m
+FROM service s
+
+R8 bis
+
+SELECT s.code, COUNT_INF.nb_inf/COUT_MAL.nb_malades AS rapport_sur_m
+FROM (SELECT code_service, COUT(*) AS nb_inf FROM infirmier GROUP BY code_service) COUT_INF
+	 (SELECT code_service, COUT(*) AS nb_malades FROM malades GROUP BY code_service) COUT_MAL, service s
+	WHERE s.code = COUT_INF.code_service AND s.code = COUT_MAL.code_service	
+
+R9
+
+SELECT DISTINCT employe.nom, employe.prenom
+FROM `hospitalisation`, `employe`, `soigne`
+WHERE employe.numero = soigne.no_docteur
+AND soigne.no_malade = hospitalisation.no_malade
+
+R10
+
+SELECT employe.nom, employe.prenom 
+FROM employe, docteur
+WHERE employe.numero = docteur.numero
+AND employe.numero NOT IN
+
+(SELECT DISTINCT employe.numero
+FROM `hospitalisation`, `employe`, `soigne`
+WHERE employe.numero = soigne.no_docteur
+AND soigne.no_malade = hospitalisation.no_malade)
+
+R11
+
+SELECT employe.nom, employe.prenom,
+COUNT(*)
+FROM employe, soigne, hospitalisation
+WHERE employe.numero = soigne.no_docteur
+AND soigne.no_malade = hospitalisation.no_malade
+GROUP BY no_docteur
+
+UNION
+
+SELECT employe.nom, employe.prenom, 0
+FROM employe, docteur, soigne
+WHERE employe.numero = docteur.numero
+AND employe.numero NOT IN
+(SELECT DISTINCT employe.numero
+FROM `hospitalisation`, `employe`, `soigne`
+WHERE employe.numero = soigne.no_docteur
+AND soigne.no_malade = hospitalisation.no_malade)
+
+R11 bis
+
+SELECT e.prenom, e.nom, COUT(h.no_malade)
+FROM employe e, soigne s LEFT OUTER JOIN hospitalisation h ON s.no_malade = h.no_malade
+WHERE e.numero = s.no_docteur
+GROUP BY e.nom, e.prenom
+
+R12
+
+SELECT DISTINCT hospitalisation.no_chambre, service.batiment
+FROM service, hospitalisation
+WHERE hospitalisation.code_service = service.code
+
+R13
+
+SELECT hospitalisation.no_chambre, service.batiment
+FROM service, hospitalisation, chambre
+WHERE chambre.code_service = service.code AND (chambre.code_service, chambre.no_chambre NOT IN
+
+(SELECT DISTINCT code_service.no_chambre
+FROM service, hospitalisation))
+
+R15
+
+SELECT e.nom, e.prenom
+FROM employe e, docteur d, soigne s, hospitalisation h
+WHERE e.numero = d.numero
+AND d.numero = s.no_docteur AND s.no_malade = h.no_malade
+GROUP BY e.nom, e.prenom
+HAVING COUNT(DISTINCT h.code_service) = (SELECT COUNT(*) FROM service)

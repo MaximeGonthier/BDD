@@ -1,0 +1,31 @@
+Les utilisateurs, leurs mot de passe et droits d'acces : 
+
+max/user
+Directeur/mdp
+Visiteur/mdpvis
+Soigneur/mdpsoi
+
+max a tous les droits
+Directeur a tous les droits
+Visiteur a les SELECT sur articles, soigneurs, animaux et activitées
+Soigneur a ALL sur Soigne,soigneur et activitées, et UPDATE sur animaux et SELECT sur animaux et bassin
+
+CREATE USER 'Directeur'@'%' identified by 'mdp';
+GRANT ALL ON Aquarium.* TO 'Directeur'@'%';
+FLUSH PRIVILEGES;
+
+CREATE USER 'Visiteur'@'%' identified by 'mdpvis';
+GRANT SELECT ON Aquarium.Animaux TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Activites TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Bassin TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Articles TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Soigneur TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Soigne TO 'Visiteur'@'%';
+
+CREATE USER 'Soigneur'@'%' identified by 'mdpsoi';
+GRANT SELECT ON Aquarium.Animaux TO 'Soigneur'@'%';
+GRANT UPDATE ON Aquarium.Animaux TO 'Soigneur'@'%';
+GRANT SELECT ON Aquarium.Bassin TO 'Soigneur'@'%';
+GRANT ALL ON Aquarium.Soigne TO 'Soigneur'@'%';
+GRANT ALL ON Aquarium.Soigneur TO 'Soigneur'@'%';
+GRANT ALL ON Aquarium.Activites TO 'Soigneur'@'%';

@@ -1,0 +1,300 @@
+GONTHIER Maxime
+
+------------------------------------------------------------------------
+Voici les requètes de création de la base de donnés :
+
+CREATE TABLE Boutique (
+	nomboutique varchar (30) PRIMARY KEY,
+	horaires varchar (30));
+
+CREATE TABLE Aquarium (
+    nomaquarium varchar (30) PRIMARY KEY, 
+    nomboutique varchar (30),
+    tarif decimal (5),
+    nbbassin int (4),
+    adresse varchar (30),
+    foreign key (nomboutique) references Boutique (nomboutique)); 
+
+CREATE TABLE Articles (
+	codebarre int (8) PRIMARY KEY,
+	prix decimal (8),
+	rayon int (2),
+	nomboutique varchar (30),
+	foreign key (nomboutique) references Boutique (nomboutique)); 
+	
+CREATE TABLE Bassin (
+	numerobassin int (4) PRIMARY KEY,
+	nomaquarium varchar (30),
+	temperature decimal (4),
+	contenance decimal (10),
+	batiment varchar (1),
+	nombreanimaux int (4),
+	foreign key (nomaquarium) references Aquarium (nomaquarium)); 
+
+CREATE TABLE Animaux (
+	id int (8) PRIMARY KEY,
+	espece varchar (60),
+	taille decimal (4),
+	numerobassin int (4),
+	foreign key (numerobassin) references Bassin (numerobassin));
+	
+CREATE TABLE Soigneur (
+	numerosoigneur int (6) PRIMARY KEY,
+	nom varchar (30),
+	prenom varchar (30),
+	specialite enum ('requin', 'otarie', 'mollusque', 'poisson', 'pingouin') default 'poisson');
+	
+CREATE TABLE Soigne (
+	cause varchar (30),
+	id int (8),
+	numerosoigneur int (6),
+	primary key(id, numerosoigneur),
+	foreign key (id) references Animaux (id),
+	foreign key (numerosoigneur) references Soigneur (numerosoigneur));
+	
+CREATE TABLE Activites (
+	nactivitee int (2),
+	date varchar (10),
+	numerobassin int (4),
+	heure varchar (5),
+	type varchar (50),
+	foreign key (numerobassin) references Bassin (numerobassin));
+	
+------------------------------------------------------------------------
+Voici les requètes d'insertion de la base de données : 
+
+INSERT INTO Boutique VALUES ("Aquaboutique", "ouverture: 10h, fermeture: 18h");
+INSERT INTO Aquarium VALUES ("Aquarium de Versailles", "Aquaboutique", 20, 10, "5 boulevard de la reine");
+INSERT INTO Articles VALUES (23421254, 12, 1, "Aquaboutique"),
+							(23448944, 15, 1, "Aquaboutique"),
+							(22309942, 19, 1, "Aquaboutique"),
+							(10908248, 43, 1, "Aquaboutique"),
+							(09482441, 45, 2, "Aquaboutique"),
+							(57842024, 10, 2, "Aquaboutique"),
+							(89458205, 10, 2, "Aquaboutique"),
+							(09484924, 10, 2, "Aquaboutique"),
+							(57928498, 35, 3, "Aquaboutique"),
+							(57429820, 30, 3, "Aquaboutique"),
+							(89509244, 5, 3, "Aquaboutique"),
+							(87492898, 20, 3, "Aquaboutique"),
+							(28049494, 12, 3, "Aquaboutique"),
+							(49094924, 8, 3, "Aquaboutique"),
+							(90947983, 70, 3, "Aquaboutique"),
+							(87248709, 90, 3, "Aquaboutique");
+
+INSERT INTO Bassin VALUES (1, "Aquarium de Versailles", 22, 1000, "A", 50),
+						  (2, "Aquarium de Versailles", 22, 1000, "A", 85),
+						  (3, "Aquarium de Versailles", 25, 10000, "A", 65),
+						  (4, "Aquarium de Versailles", 25, 20000, "B", 10),
+						  (5, "Aquarium de Versailles", 12, 7000, "B", 6),
+						  (6, "Aquarium de Versailles", 12, 800, "B", 7),
+						  (7, "Aquarium de Versailles", 12, 50000, "C", 45),
+						  (8, "Aquarium de Versailles", 15, 500, "C", 10),
+						  (9, "Aquarium de Versailles", 15, 100000, "C", 8),
+						  (10, "Aquarium de Versailles", 20, 200000, "C", 30);
+						  
+INSERT INTO Animaux VALUES (12345678, "poisson clown", 5, 1),
+						   (12345679, "poisson chirurgien", 5, 1),
+						   (12345677, "poisson perroquet", 10, 1),
+						   (12345643, "requin taureau", 150, 10),
+						   (12235678, "requin zebre", 120, 10),
+						   (62345678, "requin gris", 110, 10),
+						   (11145678, "requin guitare", 110, 10),
+						   (19930204, "thon", 70, 10),
+						   (17482894, "pastenague", 40, 9),
+						   (29849898, "raie aigle", 100, 9),
+						   (12424244, "requin pointe noire", 70, 9),
+						   (23232323, "meduse", 6, 2),
+						   (23444222, "meduse trefle", 6, 2),
+						   (23209872, "meduse bleu", 6, 2),
+						   (23244242, "brochet", 30, 3),
+						   (02993923, "dorade", 15, 3),
+						   (82782444, "rascasse", 10, 3),
+						   (27267723, "homard", 30, 4),
+						   (29849824, "crevette", 2, 4),
+						   (72882392, "oursin", 9, 4),
+						   (92828292, "pingouin", 40, 5),
+						   (20293924, "roussete", 14, 6),
+						   (28482944, "poisson ballon", 35, 7),
+						   (82994924, "baliste picasso", 35, 7),
+						   (28482945, "pbaliste clown", 30, 7),
+						   (24525255, "tetra", 7, 8),
+						   (24728759, "sacalaire", 6, 8),
+						   (28829424, "krobia", 6, 8);
+						  
+INSERT INTO Soigneur VALUES (01, "Potiron", "Paul", "poisson"),
+							(02, "Shark", "Steven", "requin"),
+							(03, "Oot", "Jean", "otarie"),
+							(04, "Squid", "Emma", "mollusque"),
+							(05, "Kinder", "Robert", "pingouin"),
+							(06, "Fish", "Gerard", "poisson"),
+							(07, "Blob", "Herve", "requin"),
+							(08, "Tuc", "Michel", "requin");
+							
+INSERT INTO Soigne VALUES ("points blanc sur la tete", 12345678, 01),
+						  ("ailerons abime", 12424244, 02),
+						  ("ne mange plus", 28829424, 06),
+						  ("inconnue", 92828292, 05),
+						  ("inconnue", 02993923, 05),
+						  ("inconnue", 62345678, 08);
+						  
+INSERT INTO Activites VALUES (1, "12/01", 5, "12", "nourissage des pingouins"),
+							 (2, "12/01", 5, "15", "spectacle des pingouins"),
+							 (3, "12/01", 10, "11", "sensibilisation aux especes en danger"),
+							 (4, "15/01", 10, "16", "decouverte des requins"),
+							 (5, "16/01", 1, "12", "nourissage des poissons tropicaux"),
+							 (6, "12/01", 6, "12", "les modes de reproduction des requins");
+
+------------------------------------------------------------------------						  
+Voici les vues crées : 
+
+CREATE VIEW soigneur_requin
+AS SELECT nom, prenom, numerosoigneur FROM Soigneur
+WHERE Soigneur.specialite = "requin";
+
+CREATE VIEW gros_animaux
+AS SELECT * FROM Animaux
+WHERE Animaux.taille >= 100;  
+
+CREATE VIEW activites_bat_b
+AS SELECT Bassin.batiment, date, heure, type, Activites.numerobassin
+FROM Bassin, Activites
+WHERE Bassin.batiment = 'B' AND Bassin.numerobassin = Activites.numerobassin;
+
+------------------------------------------------------------------------
+Voici les droit d'accès : 
+
+CREATE USER 'Directeur'@'%' identified by 'mdp';
+GRANT ALL ON Aquarium.* TO 'Directeur'@'%';
+FLUSH PRIVILEGES;
+
+CREATE USER 'Visiteur'@'%' identified by 'mdpvis';
+GRANT SELECT ON Aquarium.Animaux TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Activites TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Bassin TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Articles TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Soigneur TO 'Visiteur'@'%';
+GRANT SELECT ON Aquarium.Soigne TO 'Visiteur'@'%';
+
+CREATE USER 'Soigneur'@'%' identified by 'mdpsoi';
+GRANT SELECT ON Aquarium.Animaux TO 'Soigneur'@'%';
+GRANT UPDATE ON Aquarium.Animaux TO 'Soigneur'@'%';
+GRANT SELECT ON Aquarium.Bassin TO 'Soigneur'@'%';
+GRANT ALL ON Aquarium.Soigne TO 'Soigneur'@'%';
+GRANT ALL ON Aquarium.Soigneur TO 'Soigneur'@'%';
+GRANT ALL ON Aquarium.Activites TO 'Soigneur'@'%';
+
+Pour vérifier je peux faire : 
+SHOW GRANTS FOR Directeur;
+SHOW GRANTS FOR Visiteur;
+
+------------------------------------------------------------------------
+Voici des exemples de requètes SELECT :
+
+>>Obtenir l'id et l'espece et la taille des 10 plus petits animaux de l'aquarium : 
+
+	SELECT id, espece, taille FROM Animaux
+	ORDER BY Animaux.taille
+	ASC LIMIT 0,10
+
+>>Obtenir l'id et l'espece et la taille des animaux du batiment A, qui font entre 10 et 20cm (inclus) : 
+
+	SELECT id, espece, taille FROM Animaux, Bassin
+	WHERE Animaux.numerobassin = Bassin.numerobassin 
+	AND Animaux.taille BETWEEN 10 AND 20 
+	AND Bassin.batiment = 'A'
+
+>>Obtenir le nom,prenom et specialite des soigneurs qui soigne un animal dont la première lettre de l'espece est un 'r'
+	
+	SELECT nom, prenom, specialite, espece
+	FROM Animaux, Soigne, Soigneur
+	WHERE Animaux.id = Soigne.id AND Soigneur.numerosoigneur = Soigne.numerosoigneur
+	AND Animaux.espece LIKE 'r%'
+
+>>Obtenir le nombre d'objet de chaque rayon de la boutique ainsi que la somme de leurs prix par rayon
+
+	SELECT rayon, COUNT(DISTINCT Articles.codebarre) AS nombre_articles, SUM(Articles.prix) AS somme_prix
+	FROM Articles
+	GROUP BY rayon
+
+>>Obtenir pour chaque soigneur, le nombre d'animaux qu'il soigne, y compris ceux dont le nombre est 0
+
+	SELECT nom, prenom, COUNT(DISTINCT Soigne.id) AS nombre_soigne
+	FROM Soigneur, Soigne
+	WHERE Soigneur.numerosoigneur = Soigne.numerosoigneur
+	GROUP BY nom
+	UNION
+	SELECT nom, prenom, 0
+	FROM Soigneur, Soigne
+	WHERE Soigneur.numerosoigneur NOT IN
+	(SELECT DISTINCT Soigneur.numerosoigneur	
+	FROM Soigneur, Soigne
+	WHERE Soigneur.numerosoigneur = Soigne.numerosoigneur)
+
+>>Obtenir le numero des bassins dont un des animaux est en train d'etre soigné, 
+>>ainsi que l'espece de l'animal en question et le nom de son soigneur
+
+	SELECT Bassin.numerobassin, espece, nom
+	FROM Soigneur, Soigne, Animaux, Bassin
+	WHERE Bassin.numerobassin = Animaux.numerobassin
+	AND Animaux.id = Soigne.id
+	AND Soigneur.numerosoigneur = Soigne.numerosoigneur
+
+>>Obtenir tous les animaux du batiment C sauf ceux qui sont en train d'etre soigné
+
+	SELECT espece, Bassin.numerobassin, id
+	FROM Bassin, Animaux, Soigne
+	WHERE Bassin.batiment = 'C'
+	AND Bassin.numerobassin = Animaux.numerobassin
+	AND Animaux.id NOT IN 
+	(SELECT id FROM Soigne) 
+
+>>Obtenir les animaux des bassins de plus de 18 degrés triées par taille
+>> et depuis la vues gros_animaux
+
+	SELECT gros_animaux.espece, gros_animaux.taille, Bassin.numerobassin
+	FROM Bassin, gros_animaux
+	WHERE Bassin.numerobassin = gros_animaux.numerobassin
+	AND Bassin.temperature > 18
+	ORDER BY gros_animaux.taille
+
+------------------------------------------------------------------------
+Voici des exemples de requètes ALTER : 
+
+ALTER TABLE Boutique
+ADD COLUMN nomgerant varchar (30);
+
+ALTER TABLE Articles
+MODIFY COLUMN prix decimal (7);
+
+------------------------------------------------------------------------
+Voici des exemples de UPDATE : 
+
+UPDATE `Boutique` SET `nomgerant`= "Pic";
+
+UPDATE Articles SET prix = prix + 1
+where Articles.codebarre = 23421254;
+
+------------------------------------------------------------------------
+Voici des exemples de DELETE : 
+
+J'avais ecrit "pbaliste" au lieu de "baliste", je peux donc faire cela si je n'ai pas l'id du poisson
+mais que je connais sa taille et son numero de bassin : 
+
+DELETE
+FROM Animaux
+WHERE numerobassin = 7 AND taille = 30;
+
+INSERT INTO Animaux VALUES (19384984, "baliste clown", 30, 7);
+
+J'aurais aussi pu faire un UPDATE au lieu de faire DELETE et INSERT : 
+
+UPDATE Animaux SET espece = "baliste clown" WHERE numerobassin = 7 AND taille = 30;
+
+------------------------------------------------------------------------
+Voici les utilisateurs crées et leurs mot de passe : 
+
+max/user
+Directeur/mdp
+Visiteur/mdpvis
+Soigneur/mdpsoi

@@ -1,0 +1,108 @@
+root2 user
+char ou varchar
+decimal ou smallint
+
+
+CREATE TABLE Joueurs (
+	nom varchar (15) PRIMARY KEY,
+    prenom varchar (15),
+    age decimal (3),
+    nationalite varchar (15));
+    
+CREATE TABLE Rencontre (
+    nomgagnant varchar (15), 
+    nomperdant varchar (15),
+    lieutournoi varchar (15),
+    annee int (4),
+    score varchar (4),
+    primary key(nomgagnant, nomperdant, lieutournoi, annee),
+	foreign key (nomgagnant) references Joueurs (nom),
+    foreign key (nomperdant) references Joueurs (nom));  
+
+CREATE TABLE Gain (
+    nomjoueur varchar (15), 
+    nomsponsor varchar (15),
+    lieutournoi varchar (15),
+    annee int (4),
+    rang int (4),
+    prime int (4),
+    primary key(nomjoueur, lieutournoi, annee),
+	foreign key (nomjoueur) references Joueurs (nom),
+    foreign key (nomsponsor, lieutournoi, annee) references Sponsor (nom, lieutournoi, annee));
+    
+CREATE TABLE Sponsor (
+    nom varchar (15), 
+    lieutournoi varchar (15),
+    annee int (4),
+    adresse varchar(15),
+    montant int (4),
+    primary key(nom, lieutournoi, annee));
+    
+INSERT INTO Joueurs VALUES ("Roger", "Federer", 34, "suisse");
+INSERT INTO Joueurs VALUES ("Nadal", "Rafael", 28, "espagnol"), ("Berdych", "Thomas", 28, "tcheque"), ("Murray", "Andy", 28, "anglais"),
+("George", "Soederling", 28, "suedois"), ("Novak", "Djokovic", 28, "serbe");
+
+INSERT INTO Sponsor VALUES ("Peugot", "Rolland Garros", 2011, "3 bd de oui", 1000);
+
+INSERT INTO Sponsor VALUES ("Wilson", "Flushing-Meadows", 2011, "3 bd de non", 1000);
+
+INSERT INTO Sponsor VALUES ("IBM", "Open d'Australie", 2011, "3 bd de ah", 1000);
+INSERT INTO Sponsor VALUES ("Tea", "Wimbledon", 2011, "3 bd de h", 1000);
+
+INSERT INTO Rencontre VALUES ("Novak", "Murray", "Australie", 2011, "6/4 - 6/2 - 6/3"),
+("Nadal", "Federer", "Rolland-Garros", 2011, "7/5 - 7/6 - 5/7 - 6/1");
+
+INSERT INTO Rencontre VALUES ("Novak", "Nadal", "Wimbledon", 2011, "6/4 - 6/2 - 6/3"),
+("Novak", "Nadal", "flashing Madows", 2011, "6/4 - 6/4 - 6/7 - 6/1");
+							
+INSERT INTO Gain VALUES ("Novak", "IBM", "Open d'Australie", 2011, 2, 1000);
+INSERT INTO Gain VALUES ("Nadal", "Peugot", "Rolland Garros", 2011, 2, 1000);
+INSERT INTO Gain VALUES ("Novak", "Tea", "Wimbledon", 2011, 2, 1000);
+INSERT INTO Gain VALUES ("Novak", "Wilson", "Flushing-Meadows", 2011, 2, 1000);
+
+INSERT INTO Gain VALUES ("Murray", "IBM", "Open d'Australie", 2011, 2, 500), ("Roger", "Peugot", "Rolland Garros", 2011, 2, 500),("Nadal", "Tea", "Wimbledon", 2011, 2, 1000),
+("Nadal", "Wilson", "Flushing-Meadows", 2011, 2, 500);
+
+ALTER TABLE Joueur
+ADD COLUMN Taille int(10);
+
+Pour modifier :
+ALTER TABLE Joueurs
+MODIFY COLUMN taille int (3) ;
+
+Mettre le nom en upper : //il faut decocher la verification des clés etrangères
+UPDATE Sponsor
+SET nom = UPPER (nom)
+
+UPDATE Rencontre
+SET lieutournoi = LOWER(lieutournoi)
+WHERE annee < 2011;
+
+UPDATE Joueur
+SET age = age + 1;
+
+DELETE
+FROM Rencontre
+WHERE nomgagnant = "Roger" OR nomperdant = "Roger") AND annee = 2010;
+
+CREATE VIEW joueurs_francais
+AS SELECT nom, prenom, age FROM Joueurs
+WHERE Joueurs.nationalite = "france";
+
+Pour supprimmer : DROP VIEW joueurs_francais
+
+CREATE VIEW Matchs_perdu_gagne (gagnantnom, gagnantprenom, perdantnom, perdantprenom, lieu, annee, score)
+AS SELECT R.nomgagnant, J1.prenom, R.nomperdant, J2.prenom, R.lieutournoi, R.annee, R.score
+FROM Rencontre R, Joueur J1, Joueur J2
+WHERE R.nomgagnant = J1.nom AND R.nomperdant= J2.nom
+
+CREATE VIEW total_gain_joueurs (nom, prenom, somme)
+AS SELECT G.nomjoueur, J.prenom, SUM(G.prime)
+FROM Gain G, Joueur J
+WHERE G.nomjoueur = J.nom
+
+SELECT
+//attention mettre % à la place de hote partout, et il faut les faires depuis le compte principal
+CREATE USER 'Alice'@'%' identified by 'mdp';
+GRANT ALL ON bd_alice.* TO 'Alice'@'%';
+FLUSH PRIVILEGES;
